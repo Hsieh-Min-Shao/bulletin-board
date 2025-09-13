@@ -6,6 +6,7 @@ target/
 
 # IDE
 .idea/
+.smarttomcat
 *.iml
 *.class
 .DS_Store
