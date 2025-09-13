@@ -1,0 +1,21 @@
+# Maven
+target/
+*.war
+*.ear
+*.jar
+
+# IDE
+.idea/
+*.iml
+*.class
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+
+# Tomcat / Webapp meta config
+META-INF/

@@ -21,6 +21,7 @@
     <bean id="conversionService"
           class="org.springframework.format.support.FormattingConversionServiceFactoryBean"/>
     <mvc:annotation-driven conversion-service="conversionService"/>
+    <mvc:view-controller path="/" view-name="homePage"/>
 
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
