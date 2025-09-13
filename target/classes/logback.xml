@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 目錄：寫進 SmartTomcat 的 logs 夾，找不到就退回專案根目錄 -->
+    <property name="APP_NAME" value="bulletinBoard"/>
+    <property name="LOG_DIR"  value="${catalina.base:-.}/logs"/>
+
+    <!-- Console（開發最重要） -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target> <!-- 明確走 stdout，就不會被 IDE 當成「紅字」的 stderr -->
+        <encoder>
+            <!-- 依等級自動上色，logger 用青色 -->
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) [%thread] %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <!-- 檔案 + 滾動（每天/10MB 兩者其一切分） -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${APP_NAME}.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>200MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 你自己的程式：訊息多一點 -->
+    <logger name="com.example.bulletin" level="DEBUG"/>
+
+    <!-- Hibernate：看 SQL 與參數（5.6） -->
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+    <!-- 若你用 Hikari 想看連線池細節再開 -->
+    <!-- <logger name="com.zaxxer.hikari" level="DEBUG"/> -->
+
+    <!-- Root：大多數第三方框架維持 INFO 就好 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
