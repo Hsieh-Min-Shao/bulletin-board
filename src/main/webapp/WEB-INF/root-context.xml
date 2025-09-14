@@ -2,13 +2,17 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:jee="http://www.springframework.org/schema/jee"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-         http://www.springframework.org/schema/beans  http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
          http://www.springframework.org/schema/tx      http://www.springframework.org/schema/tx/spring-tx.xsd
-         http://www.springframework.org/schema/jee     http://www.springframework.org/schema/jee/spring-jee.xsd">
+         http://www.springframework.org/schema/jee     http://www.springframework.org/schema/jee/spring-jee.xsd
+         http://www.springframework.org/schema/aop     http://www.springframework.org/schema/aop/spring-aop.xsd
+"
+>
 
 <!--    &lt;!&ndash; Hikari DataSource（H2 記憶體 DB） &ndash;&gt;-->
 <!--    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">-->
@@ -18,7 +22,7 @@
 <!--        <property name="password" value=""/>-->
 <!--    </bean>-->
 
-    <!-- ✅ 用 JNDI 取用容器裡的 DataSource，不再在 App 端保存帳密 -->
+    <!-- 用 JNDI 取用容器裡的 DataSource，不再在 App 端保存帳密 -->
     <jee:jndi-lookup id="dataSource"
                      jndi-name="java:comp/env/jdbc/BulletinDS"
                      expected-type="javax.sql.DataSource"/>
@@ -33,7 +37,7 @@
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
 
 <!--                <prop key="hibernate.hbm2ddl.auto">update</prop>-->
-                <prop key="hibernate.show_sql">true</prop>
+<!--                <prop key="hibernate.show_sql">true</prop>-->
                 <prop key="hibernate.format_sql">true</prop>
             </props>
         </property>
@@ -44,9 +48,6 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     <tx:annotation-driven transaction-manager="txManager"/>
-
-    <!-- 掃描 Service（讓 @Service 生效） -->
-    <!--    <context:component-scan base-package="com.example.bulletin.service"/>-->
 
 
     <!-- WEB-INF/root-context.xml -->
@@ -60,8 +61,5 @@
     <!-- 開啟 placeholder 解析（傳統 Spring 必須） -->
     <context:property-placeholder/>
 
-<!--    &lt;!&ndash; 有預設值的路徑；優先讀 JVM -DUPLOAD_PATH，再來 OS 環境變數 &ndash;&gt;-->
-<!--    <bean id="uploadRoot" class="java.lang.String">-->
-<!--        <constructor-arg value="${UPLOAD_PATH:/var/app/uploads}"/>-->
-<!--    </bean>-->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 </beans>
