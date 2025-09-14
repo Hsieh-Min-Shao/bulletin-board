@@ -22,6 +22,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     </style>
   </head>
   <body>
+    <%@ include file="/WEB-INF/views/_layout/header.jsp" %>
     <div class="container">
       <div class="d-grid gap-2 mb-1">
         <a
@@ -74,7 +75,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
         </table>
       </div>
 
-      <c:set var="pageNums" value="3" />
+      <c:set var="pageNums" value="5" />
       <c:set
         var="blockStart"
         value="${ (page - 1) - ((page - 1) mod pageNums) + 1 }"
