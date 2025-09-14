@@ -6,6 +6,8 @@ import com.example.bulletin.entity.AnnFile;
 import com.example.bulletin.entity.Announce;
 import com.example.bulletin.service.AnnounceService;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,6 +64,7 @@ public class AnnounceServiceImpl implements AnnounceService {
     @Override
     public void create(Announce announce, MultipartFile[] attachments) {
         if (StringUtils.isBlank(announce.getPublisher())) announce.setPublisher("Administrator");
+        announce.setContent(Jsoup.clean(announce.getContent(), Safelist.basic()));
         announceDao.create(announce);
         uploadFiles(announce.getId(), attachments);
     }
@@ -69,6 +72,7 @@ public class AnnounceServiceImpl implements AnnounceService {
 
     @Override
     public void update(Announce announce, MultipartFile[] attachments) {
+        announce.setContent(Jsoup.clean(announce.getContent(), Safelist.basic()));
         announceDao.update(announce);
         uploadFiles(announce.getId(), attachments);
     }
