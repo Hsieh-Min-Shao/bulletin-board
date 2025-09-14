@@ -7,7 +7,7 @@ import java.util.List;
 public interface AnnounceDao {
     List<Announce> findAll();
 
-    List<Announce> findAllByPage(int page);
+    List<Announce> findAllByPage(int page, int pageSize);
 
     long countAll();
 

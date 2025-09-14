@@ -25,11 +25,10 @@ public class AnnounceDaoImpl implements AnnounceDao {
     }
 
     @Override
-    public List<Announce> findAllByPage(int page) {
-        int size = 3;
-        int beginPage = (page - 1) * size;
+    public List<Announce> findAllByPage(int page, int pageSize) {
+        int beginPage = (page - 1) * pageSize;
         return s().createQuery("from Announce order by publishDate desc", Announce.class)
-                .setFirstResult(beginPage).setMaxResults(size).list();
+                .setFirstResult(beginPage).setMaxResults(pageSize).list();
     }
 
     @Override
