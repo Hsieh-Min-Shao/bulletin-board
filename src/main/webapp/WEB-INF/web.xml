@@ -45,17 +45,35 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-    <!-- H2 Web Console（只給本機看即可） -->
-    <servlet>
-        <servlet-name>H2Console</servlet-name>
-        <servlet-class>org.h2.server.web.WebServlet</servlet-class>
-        <!-- 若要允許非本機存取，設 webAllowOthers=true；開發機建議保持 false -->
-        <init-param><param-name>webAllowOthers</param-name><param-value>false</param-value></init-param>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>H2Console</servlet-name>
-        <url-pattern>/h2-console/*</url-pattern>
-    </servlet-mapping>
+    <!-- 404：找不到路由或資源 -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/views/error/404.jsp</location>
+    </error-page>
+
+    <!-- 500：未攔截的伺服器錯誤 -->
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/views/error/500.jsp</location>
+    </error-page>
+
+    <!-- 兜底：任何未處理例外（可選，但很實用） -->
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/WEB-INF/views/error/500.jsp</location>
+    </error-page>
+
+<!--    &lt;!&ndash; H2 Web Console（只給本機看即可） &ndash;&gt;-->
+<!--    <servlet>-->
+<!--        <servlet-name>H2Console</servlet-name>-->
+<!--        <servlet-class>org.h2.server.web.WebServlet</servlet-class>-->
+<!--        &lt;!&ndash; 若要允許非本機存取，設 webAllowOthers=true；開發機建議保持 false &ndash;&gt;-->
+<!--        <init-param><param-name>webAllowOthers</param-name><param-value>false</param-value></init-param>-->
+<!--        <load-on-startup>2</load-on-startup>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>H2Console</servlet-name>-->
+<!--        <url-pattern>/h2-console/*</url-pattern>-->
+<!--    </servlet-mapping>-->
 
 </web-app>
