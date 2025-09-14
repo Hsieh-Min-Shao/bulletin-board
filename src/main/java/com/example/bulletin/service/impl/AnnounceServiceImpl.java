@@ -5,6 +5,7 @@ import com.example.bulletin.dao.AnnounceDao;
 import com.example.bulletin.entity.AnnFile;
 import com.example.bulletin.entity.Announce;
 import com.example.bulletin.service.AnnounceService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +28,8 @@ import java.util.UUID;
 @Transactional
 public class AnnounceServiceImpl implements AnnounceService {
 
+    private final int PAGE_SIZE = 5;
+
     @Value("${UPLOAD_PATH}")
     private String uploadDir;
 
@@ -48,7 +51,7 @@ public class AnnounceServiceImpl implements AnnounceService {
         if (totalPage == 0) totalPage = 1;
         if (page <= 0) page = 1;
         else if (page > totalPage) page = totalPage;
-        return announceDao.findAllByPage(page);
+        return announceDao.findAllByPage(page, PAGE_SIZE);
     }
 
     @Override
@@ -58,6 +61,7 @@ public class AnnounceServiceImpl implements AnnounceService {
 
     @Override
     public void create(Announce announce, MultipartFile[] attachments) {
+        if (StringUtils.isBlank(announce.getPublisher())) announce.setPublisher("Administrator");
         announceDao.create(announce);
         uploadFiles(announce.getId(), attachments);
     }
@@ -98,8 +102,7 @@ public class AnnounceServiceImpl implements AnnounceService {
 
     @Override
     public int getTotalPage() {
-        int size = 3;
-        int totalPages = (int) Math.ceil((double) announceDao.countAll() / size);
+        int totalPages = (int) Math.ceil((double) announceDao.countAll() / PAGE_SIZE);
         if (totalPages < 1) totalPages = 1;
         return totalPages;
     }

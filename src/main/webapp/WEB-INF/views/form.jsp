@@ -9,6 +9,7 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
     <%@ include file="/WEB-INF/views/_layout/head.jspf" %>
   </head>
   <body>
+    <%@ include file="/WEB-INF/views/_layout/header.jsp" %>
     <div class="container">
       <c:choose>
         <c:when test="${isCreate}">
@@ -18,7 +19,12 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
           <c:url var="formAction" value="/announce/${announce.id}/edit" />
         </c:otherwise>
       </c:choose>
-      <form action="${formAction}" method="post" enctype="multipart/form-data">
+      <form
+        action="${formAction}"
+        method="post"
+        enctype="multipart/form-data"
+        novalidate
+      >
         <!-- 標題 -->
         <div class="row g-2 align-items-center mb-3">
           <div class="col-2">
@@ -120,6 +126,15 @@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
               ></div>
             </div>
           </c:forEach>
+        </c:if>
+
+        <!-- 錯誤提示 -->
+        <c:if test="${not empty errors}">
+          <div class="alert alert-danger">
+            <c:forEach var="err" items="${errors.allErrors}">
+              <div><c:out value="${err.defaultMessage}" /></div>
+            </c:forEach>
+          </div>
         </c:if>
 
         <!-- 送出 -->

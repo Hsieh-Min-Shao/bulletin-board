@@ -3,19 +3,23 @@ package com.example.bulletin.controller;
 import com.example.bulletin.entity.AnnFile;
 import com.example.bulletin.entity.Announce;
 import com.example.bulletin.service.AnnounceService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
 @Controller
+@Slf4j
 public class AnnounceController {
 
 
@@ -57,15 +61,28 @@ public class AnnounceController {
     }
 
     @PostMapping("/announce/create")
-    public String create(@ModelAttribute Announce announce,
-                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+    public String create(@Valid @ModelAttribute Announce announce, BindingResult result,
+                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("errors", result);
+            model.addAttribute("announce", announce);
+            model.addAttribute("isCreate", true);
+            return "form";
+        }
         announceService.create(announce, attachments);
         return "redirect:/";
     }
 
     @PostMapping("/announce/{id}/edit")
-    public String update(@PathVariable Long id, @ModelAttribute Announce announce,
-                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments) {
+    public String update(@PathVariable Long id,@Valid @ModelAttribute Announce announce, BindingResult result,
+                         @RequestParam(value = "attachments", required = false) MultipartFile[] attachments, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("errors", result);
+            model.addAttribute("announce", announce);
+            model.addAttribute("isCreate", false);
+            model.addAttribute("annFiles", announceService.getAllFilesByAnnId(id));
+            return "form";
+        }
         announce.setId(id);
         announceService.update(announce, attachments);
         return "redirect:/";
@@ -85,7 +102,7 @@ public class AnnounceController {
 
     @GetMapping("/announce/{annId}/files/download/{filesId}")
     public ResponseEntity<InputStreamResource> downFiles(@PathVariable Long annId, @PathVariable Long filesId) throws IOException {
-        return announceService.downFiles(annId,filesId);
+        return announceService.downFiles(annId, filesId);
     }
 
     @DeleteMapping("/announce/{annId}/files/{fileId}")
